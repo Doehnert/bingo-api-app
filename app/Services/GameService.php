@@ -2,6 +2,7 @@
 
 namespace App\Services;
 
+use Exception;
 use App\Models\Game;
 use App\Models\User;
 
@@ -66,7 +67,7 @@ class GameService
         $game = $this->currentGame();
 
         if (!$game) {
-            throw new \Exception('No active game found');
+            throw new Exception('No active game found');
         }
 
         if ($number === $game->current_number) {
@@ -86,7 +87,7 @@ class GameService
         $calledNumbers = $game->called_numbers ?? [];
 
         if (count($calledNumbers) >= 100) {
-            throw new \Exception('All numbers have been called!');
+            throw new Exception('All numbers have been called!');
         }
 
         do {
