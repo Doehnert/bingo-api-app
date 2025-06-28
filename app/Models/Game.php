@@ -9,8 +9,6 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Support\Carbon;
 
 /**
- *
- *
  * @property int $id
  * @property int $current_number
  * @property array<array-key, mixed>|null $called_numbers
@@ -20,6 +18,7 @@ use Illuminate\Support\Carbon;
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
  * @property-read \App\Models\User|null $winnerUser
+ *
  * @method static Builder<static>|Game active()
  * @method static \Database\Factories\GameFactory factory($count = null, $state = [])
  * @method static Builder<static>|Game inactive()
@@ -34,6 +33,7 @@ use Illuminate\Support\Carbon;
  * @method static Builder<static>|Game whereUpdatedAt($value)
  * @method static Builder<static>|Game whereWinner($value)
  * @method static Builder<static>|Game whereWinnerScore($value)
+ *
  * @mixin \Eloquent
  */
 class Game extends Model
@@ -62,28 +62,28 @@ class Game extends Model
     /**
      * @var array<App\Models\array-key,mixed>|null
      */
-    public array|null $called_numbers;
+    public ?array $called_numbers;
 
     public bool $is_active;
 
-    public int|null $winner;
+    public ?int $winner;
 
-    public int|null $winner_score;
-
-    /**
-     * @var Illuminate\Support\Carbon|null
-     */
-    public Carbon|null $created_at;
+    public ?int $winner_score;
 
     /**
      * @var Illuminate\Support\Carbon|null
      */
-    public Carbon|null $updated_at;
+    public ?Carbon $created_at;
+
+    /**
+     * @var Illuminate\Support\Carbon|null
+     */
+    public ?Carbon $updated_at;
 
     /**
      * @var App\Models\User|null
      */
-    public User|null $winnerUser;
+    public ?User $winnerUser;
 
     /**
      * @return BelongsTo<User,Game>
@@ -92,8 +92,9 @@ class Game extends Model
     {
         return $this->belongsTo(User::class, 'winner');
     }
+
     /**
-     * @param Builder<Model> $query
+     * @param  Builder<Model>  $query
      */
     public function scopeActive(Builder $query): Builder
     {

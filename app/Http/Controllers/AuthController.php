@@ -4,7 +4,6 @@ namespace App\Http\Controllers;
 
 use App\Models\User;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
 
 class AuthController extends Controller
 {
@@ -19,7 +18,7 @@ class AuthController extends Controller
 
         // Find or create user by name
         $user = User::where('name', $request->name)->first();
-        if (!$user) {
+        if (! $user) {
             $user = User::create(['name' => $request->name]);
         }
 
@@ -29,7 +28,7 @@ class AuthController extends Controller
         return response()->json([
             'user' => $user,
             'token' => $token,
-            'message' => 'Login successful'
+            'message' => 'Login successful',
         ]);
     }
 
@@ -41,7 +40,7 @@ class AuthController extends Controller
         $request->user()->currentAccessToken()->delete();
 
         return response()->json([
-            'message' => 'Logged out successfully'
+            'message' => 'Logged out successfully',
         ]);
     }
 
@@ -65,7 +64,7 @@ class AuthController extends Controller
         return response()->json([
             'user' => $user,
             'token' => $token,
-            'message' => 'Registration successful'
+            'message' => 'Registration successful',
         ]);
     }
 }

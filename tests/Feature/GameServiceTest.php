@@ -1,8 +1,8 @@
 <?php
 
-use Exception;
 use App\Models\Game;
 use App\Services\GameService;
+use Exception;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 
 uses(RefreshDatabase::class);
@@ -15,7 +15,7 @@ it('creating a new game deactivates all other games', function () {
         'is_active' => false,
     ]);
 
-    (new GameService())->newGame();
+    (new GameService)->newGame();
     $game = Game::active()->first();
 
     $this->assertDatabaseHas('games', [
@@ -29,7 +29,7 @@ it('creating a new game deactivates all other games', function () {
 });
 
 it('can validate a number', function () {
-    $gameService = new GameService();
+    $gameService = new GameService;
     $gameService->newGame();
     $game = Game::active()->first();
     $game->current_number = 1;
@@ -42,7 +42,7 @@ it('can validate a number', function () {
 });
 
 it('test generating more than 100 numbers throws an exception', function () {
-    $gameService = new GameService();
+    $gameService = new GameService;
     $gameService->newGame();
     $game = Game::active()->first();
     $game->current_number = 1;
@@ -56,7 +56,7 @@ it('test generating more than 100 numbers throws an exception', function () {
 });
 
 it('test all generated numbers are unique', function () {
-    $gameService = new GameService();
+    $gameService = new GameService;
     $gameService->newGame();
     $uniqueNumbers = [];
     $game = Game::active()->first();

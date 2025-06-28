@@ -2,8 +2,8 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
 use App\Services\GameService;
+use Illuminate\Http\Request;
 
 class GameController extends Controller
 {
@@ -12,6 +12,7 @@ class GameController extends Controller
     public function leaderboard(): \Illuminate\Http\JsonResponse
     {
         $leaderboard = $this->gameService->leaderboard();
+
         return response()->json($leaderboard);
     }
 
@@ -19,13 +20,14 @@ class GameController extends Controller
     {
         try {
             $game = $this->gameService->newGame();
+
             return response()->json([
                 'message' => 'Game started successfully',
                 'game' => $game,
             ]);
         } catch (\Exception $e) {
             return response()->json([
-                'error' => $e->getMessage()
+                'error' => $e->getMessage(),
             ], 400);
         }
     }
@@ -38,7 +40,7 @@ class GameController extends Controller
             return response()->json($game->current_number);
         } catch (\Exception $e) {
             return response()->json([
-                'error' => $e->getMessage()
+                'error' => $e->getMessage(),
             ], 400);
         }
     }
@@ -55,7 +57,7 @@ class GameController extends Controller
             ]);
         } catch (\Exception $e) {
             return response()->json([
-                'error' => $e->getMessage()
+                'error' => $e->getMessage(),
             ], 400);
         }
     }
@@ -75,7 +77,7 @@ class GameController extends Controller
             ]);
         } catch (\Exception $e) {
             return response()->json([
-                'error' => $e->getMessage()
+                'error' => $e->getMessage(),
             ], 400);
         }
     }

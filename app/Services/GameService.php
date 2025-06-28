@@ -2,9 +2,9 @@
 
 namespace App\Services;
 
-use Exception;
 use App\Models\Game;
 use App\Models\User;
+use Exception;
 use Illuminate\Database\Concerns\TValue;
 
 class GameService
@@ -29,6 +29,7 @@ class GameService
                 'game_id' => $game->id,
             ];
         }
+
         return $leaderboard;
     }
 
@@ -48,7 +49,7 @@ class GameService
     public function advanceGame(): null|TValue|Game
     {
         $game = Game::active()->first();
-        if (!$game) {
+        if (! $game) {
             $game = $this->newGame();
         }
 
@@ -69,7 +70,7 @@ class GameService
     {
         $game = $this->currentGame();
 
-        if (!$game) {
+        if (! $game) {
             throw new Exception('No active game found');
         }
 
@@ -82,7 +83,7 @@ class GameService
 
     /**
      * Generate a random number that is not in the called numbers array
-     * @param Game $game
+     *
      * @return int
      */
     private function generateRandomNumber(Game $game)
@@ -99,13 +100,14 @@ class GameService
 
         return $number;
     }
+
     /**
      * @return TValue
      */
     public function win(User $user, int $score)
     {
         $game = $this->currentGame();
-        if (!$game) {
+        if (! $game) {
             throw new \Exception('No active game found');
         }
 
@@ -113,6 +115,7 @@ class GameService
         $game->winner_score = $score;
         $game->is_active = false;
         $game->save();
+
         return $game;
     }
 
