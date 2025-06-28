@@ -5,10 +5,14 @@ namespace App\Services;
 use Exception;
 use App\Models\Game;
 use App\Models\User;
+use Illuminate\Database\Concerns\TValue;
 
 class GameService
 {
-    public function leaderboard()
+    /**
+     * @return array<int,array>
+     */
+    public function leaderboard(): array
     {
         $games = Game::query()
             ->with('winnerUser')
@@ -28,25 +32,24 @@ class GameService
         return $leaderboard;
     }
 
-    public function newGame()
+    public function newGame(): Game
     {
         // Deactivate all other games
-        Game::where('is_active', true)->update(['is_active' => false]);
+        Game::active()->update(['is_active' => false]);
 
         $game = Game::create([
             'is_active' => true,
             'called_numbers' => [],
         ]);
+
+        return $game;
     }
 
-    public function nextNumber()
+    public function advanceGame(): null|TValue|Game
     {
         $game = Game::active()->first();
         if (!$game) {
-            $game = Game::create([
-                'is_active' => true,
-                'called_numbers' => [],
-            ]);
+            $game = $this->newGame();
         }
 
         $number = $this->generateRandomNumber($game);
@@ -62,7 +65,7 @@ class GameService
         return $game;
     }
 
-    public function validateNumber(int $number)
+    public function validateNumber(int $number): bool
     {
         $game = $this->currentGame();
 
@@ -96,7 +99,9 @@ class GameService
 
         return $number;
     }
-
+    /**
+     * @return TValue
+     */
     public function win(User $user, int $score)
     {
         $game = $this->currentGame();
@@ -111,7 +116,7 @@ class GameService
         return $game;
     }
 
-    private function currentGame()
+    private function currentGame(): ?TValue
     {
         return Game::active()->latest()->first();
     }

@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Game;
 use Illuminate\Http\Request;
 use App\Services\GameService;
 
@@ -10,7 +9,7 @@ class GameController extends Controller
 {
     public function __construct(private GameService $gameService) {}
 
-    public function leaderboard()
+    public function leaderboard(): \Illuminate\Http\JsonResponse
     {
         $leaderboard = $this->gameService->leaderboard();
         return response()->json($leaderboard);
@@ -34,7 +33,7 @@ class GameController extends Controller
     public function nextNumber()
     {
         try {
-            $game = $this->gameService->nextNumber();
+            $game = $this->gameService->advanceGame();
 
             return response()->json($game->current_number);
         } catch (\Exception $e) {

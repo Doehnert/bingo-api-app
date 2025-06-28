@@ -49,10 +49,10 @@ it('test generating more than 100 numbers throws an exception', function () {
     $game->save();
     $game->refresh();
     for ($i = 0; $i < 100; $i++) {
-        $gameService->nextNumber();
+        $gameService->advanceGame();
     }
     $this->expectException(Exception::class);
-    $gameService->nextNumber();
+    $gameService->advanceGame();
 });
 
 it('test all generated numbers are unique', function () {
@@ -64,7 +64,7 @@ it('test all generated numbers are unique', function () {
     $game->save();
     $game->refresh();
     for ($i = 0; $i < 100; $i++) {
-        $number = $gameService->nextNumber();
+        $number = $gameService->advanceGame();
         $uniqueNumbers[] = $number;
     }
     expect($uniqueNumbers)->toHaveCount(100);
