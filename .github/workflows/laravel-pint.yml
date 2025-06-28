@@ -1,0 +1,40 @@
+name: Laravel Pint
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  laravel-pint:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      pull-requests: write
+
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4.1.7
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Setup PHP and Composer
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: "8.4"
+          tools: composer:v2
+
+      - name: Install Laravel Pint
+        run: composer global require laravel/pint
+
+      - name: Run Pint
+        run: pint
+
+      - name: Push Changes
+        if: success()
+        run: |
+          git config --global user.name "github-actions[bot]"
+          git config --global user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add .
+          git diff --staged --quiet || git commit -m "style: apply Laravel Pint formatting"
+          git push
