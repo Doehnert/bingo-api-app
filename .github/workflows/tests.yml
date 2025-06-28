@@ -1,0 +1,37 @@
+name: Tests
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  laravel-pint:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      pull-requests: write
+
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4.1.7
+
+      - name: Setup PHP and Composer
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: "8.4"
+          tools: composer:v2
+
+      - name: Install dependencies
+        run: composer install -q --no-interaction
+
+      - name: Prep application
+        run: |
+          cp .env.example .env
+          php artisan key:generate
+
+      - name: Run tests
+        env:
+          DB_CONNECTION: sqlite
+          DB_DATABASE: ":memory:"
+        run: php artisan test --compact
