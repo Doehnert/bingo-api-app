@@ -55,36 +55,6 @@ class Game extends Model
         'winner_score' => 'integer',
     ];
 
-    public int $id;
-
-    public int $current_number;
-
-    /**
-     * @var array<App\Models\array-key,mixed>|null
-     */
-    public ?array $called_numbers;
-
-    public bool $is_active;
-
-    public ?int $winner;
-
-    public ?int $winner_score;
-
-    /**
-     * @var Illuminate\Support\Carbon|null
-     */
-    public ?Carbon $created_at;
-
-    /**
-     * @var Illuminate\Support\Carbon|null
-     */
-    public ?Carbon $updated_at;
-
-    /**
-     * @var App\Models\User|null
-     */
-    public ?User $winnerUser;
-
     /**
      * @return BelongsTo<User,Game>
      */
@@ -98,7 +68,7 @@ class Game extends Model
      */
     public function scopeActive(Builder $query): Builder
     {
-        $query->where('is_active', true);
+        return $query->where('is_active', true);
     }
 
     /**
@@ -106,6 +76,6 @@ class Game extends Model
      */
     public function scopeInactive(Builder $query): Builder
     {
-        $query->where('is_active', false);
+        return $query->where('is_active', false);
     }
 }

@@ -15,12 +15,11 @@ it('creating a new game deactivates all other games', function () {
         'is_active' => false,
     ]);
 
-    (new GameService)->newGame();
-    $game = Game::active()->first();
+    $newGame = (new GameService)->newGame();
 
     $this->assertDatabaseHas('games', [
         'is_active' => true,
-        'id' => $game->id,
+        'id' => $newGame->id,
     ]);
     $this->assertDatabaseHas('games', [
         'is_active' => false,

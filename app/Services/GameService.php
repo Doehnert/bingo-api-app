@@ -5,7 +5,6 @@ namespace App\Services;
 use App\Models\Game;
 use App\Models\User;
 use Exception;
-use Illuminate\Database\Concerns\TValue;
 
 class GameService
 {
@@ -46,7 +45,7 @@ class GameService
         return $game;
     }
 
-    public function advanceGame(): null|TValue|Game
+    public function advanceGame(): Game
     {
         $game = Game::active()->first();
         if (! $game) {
@@ -101,10 +100,7 @@ class GameService
         return $number;
     }
 
-    /**
-     * @return TValue
-     */
-    public function win(User $user, int $score)
+    public function win(User $user, int $score): Game
     {
         $game = $this->currentGame();
         if (! $game) {
@@ -119,7 +115,7 @@ class GameService
         return $game;
     }
 
-    private function currentGame(): ?TValue
+    private function currentGame(): ?Game
     {
         return Game::active()->latest()->first();
     }
