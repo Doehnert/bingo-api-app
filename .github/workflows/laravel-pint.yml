@@ -12,16 +12,37 @@ jobs:
       contents: write
       pull-requests: write
 
+    env:
+      PHP_VERSION: 8.4
+      PHP_EXTENSIONS: bcmath, Core, ctype, curl, date, dom, exif, fileinfo, filter, gd, hash, iconv, intl, json, libxml, mbstring, mysqlnd, openssl, pcntl, pcre, PDO, pdo_sqlite, Phar, posix, random, readline, Reflection, session, SimpleXML, sodium, SPL, standard, tokenizer, xdebug, xml, xmlreader, xmlwriter, zip, zlib
+      CACHE_KEY: extension-cache-v1
+
     steps:
       - name: Checkout Code
         uses: actions/checkout@v4.1.7
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
 
+      - name: Setup cache environment
+        id: extcache
+        uses: shivammathur/cache-extensions@v1
+        with:
+          php-version: ${{ env.PHP_VERSION }}
+          extensions: ${{ env.PHP_EXTENSIONS }}
+          key: ${{ env.CACHE_KEY }}
+
+      - name: Cache extensions
+        uses: actions/cache@v4
+        with:
+          path: ${{ steps.extcache.outputs.dir }}
+          key: ${{ steps.extcache.outputs.key }}
+          restore-keys: ${{ steps.extcache.outputs.key }}
+
       - name: Setup PHP and Composer
         uses: shivammathur/setup-php@v2
         with:
-          php-version: "8.4"
+          php-version: ${{ env.PHP_VERSION }}
+          extensions: ${{ env.PHP_EXTENSIONS }}
           tools: composer:v2
 
       - name: Install Laravel Pint
