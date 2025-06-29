@@ -1,0 +1,61 @@
+name: Setup
+
+description: "Setup PHP and Composer"
+
+inputs:
+  php-version:
+    description: "PHP version(s) you wish to use."
+    required: true
+
+  php-extensions:
+    description: "PHP extensions you wish to use."
+    required: false
+    default: bcmath, Core, ctype, curl, date, dom, exif, fileinfo, filter, gd, hash, iconv, intl, json, libxml, mbstring, mysqlnd, openssl, pcntl, pcre, PDO, pdo_sqlite, Phar, posix, random, readline, Reflection, session, SimpleXML, sodium, SPL, standard, tokenizer, xdebug, xml, xmlreader, xmlwriter, zip, zlib
+
+  cache-key:
+    description: "Cache key to use for the cache."
+    required: true
+
+runs:
+  using: 'composite'
+
+  steps:
+
+    - name: Get PHP extension cache hash
+      id: get-cache-hash
+      run: echo hash=$(echo $PHP_EXTENSIONS | md5sum | awk '{print $1}') >> $GITHUB_OUTPUT
+      shell: bash
+
+    - name: Setup cache environment
+      id: extcache
+      uses: shivammathur/cache-extensions@v1
+      with:
+        php-version: ${{ inputs.php-version }}
+        extensions: ${{ inputs.php-extensions }}
+        key: php-extensions-${{ steps.get-cache-hash.outputs.hash }}
+
+    - name: Cache extensions
+      uses: actions/cache@v4
+      with:
+        path: ${{ steps.extcache.outputs.dir }}
+        key: ${{ steps.extcache.outputs.key }}
+        restore-keys: ${{ steps.extcache.outputs.key }}
+
+    - name: Setup PHP and Composer
+      uses: shivammathur/setup-php@v2
+      with:
+        php-version: ${{ inputs.php-version }}
+        extensions: ${{ inputs.php-extensions }}
+        tools: composer:v2
+
+    - name: Get Composer cache dir
+      id: composer-cache-dir
+      run: echo dir=$(composer config cache-files-dir) >> $GITHUB_OUTPUT
+      shell: bash
+
+    - name: Cache dependencies
+      uses: actions/cache@v4
+      with:
+        key: composer-cache-${{ hashFiles('**/composer.lock') }}
+        path: ${{ steps.composer-cache-dir.outputs.dir }}
+        restore-keys: composer-cache-
